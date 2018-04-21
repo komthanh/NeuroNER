@@ -11,6 +11,7 @@ import argparse
 from argparse import RawTextHelpFormatter
 import sys
 from neuroner import NeuroNER
+from distutils import util
 
 import warnings
 warnings.filterwarnings('ignore')
