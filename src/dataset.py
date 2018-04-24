@@ -95,9 +95,10 @@ class Dataset(object):
 
             label_indices[dataset_type] = []
             for label_sequence in labels[dataset_type]:
-                # Note: Map to O label for all labels not appear in the training data.
+                # Note:  Map to O label for all labels not appear in the training data.
                 label_indices[dataset_type].append(
-                    [label_to_index[label] if label in label_to_index else label_to_index["O"]
+                    [label_to_index[label] if label in label_to_index
+                     else label_to_index["O"]
                      for label in label_sequence])
 
         if self.verbose:
@@ -290,13 +291,13 @@ class Dataset(object):
             # Make sure labels are compatible with the pretraining dataset.
             for label in label_count['all']:
                 if label not in pretraining_dataset.label_to_index:
-                    # A hypotheized, invalid label was formed.
+                    #  A hypotheized, invalid label was formed.
                     print("ERROR: The label {0} does not exist in the pretraining dataset. ".format(label) +
                           "Please ensure that only the following labels exist in the dataset: {0}".format(
                               ', '.join(self.unique_labels)))
             label_to_index = pretraining_dataset.label_to_index.copy()
-            # A Unknown label reserved for labels that appear in the test set but not in the training set.
-            # label_to_index["Unk"] = len(label_to_index) # this creates dimensionality mis-match when loading a pre-trained model
+            #  A Unknown label reserved for labels that appear in the test set but not in the training set.
+            #  label_to_index["Unk"] = len(label_to_index) # this creates dimensionality mis-match when loading a pre-trained model
         else:
             label_to_index = {}
             iteration_number = 0

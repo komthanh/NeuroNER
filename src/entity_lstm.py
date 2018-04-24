@@ -349,9 +349,9 @@ class EntityLSTM(object):
 
         # Assert that the label sets are the same
         # Test set should have the same label set as the pretrained dataset
-        # Augment with a Unk label similar to the loaded dataset; This creates dimensionality mis-match when loading a pre-trained model
-        # pretraining_dataset.index_to_label[len(pretraining_dataset.index_to_label)] = "Unk"
-        # pretraining_dataset.label_to_index["Unk"] = len(pretraining_dataset.label_to_index)
+        #  Augment with a Unk label similar to the loaded dataset; This creates dimensionality mis-match when loading a pre-trained model
+        #  pretraining_dataset.index_to_label[len(pretraining_dataset.index_to_label)] = "Unk"
+        #  pretraining_dataset.label_to_index["Unk"] = len(pretraining_dataset.label_to_index)
         assert pretraining_dataset.index_to_label == dataset.index_to_label
 
         # If the token and character mappings are exactly the same
