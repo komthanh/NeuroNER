@@ -1,7 +1,7 @@
 import tensorflow as tf
 import re
 import time
-import utils_tf
+import src.utils_tf as utils_tf
 import utils_nlp
 import os
 import pickle
@@ -90,6 +90,10 @@ class EntityLSTM(object):
                     "character_embedding_weights",
                     shape=[dataset.alphabet_size, parameters['character_embedding_dimension']],
                     initializer=initializer)
+                # self.character_embedding_weights = tf.get_variable(
+                #     "character_embedding_weights",
+                #     shape=[dataset.alphabet_size, parameters['character_embedding_dimension']],
+                #     initializer=initializer, validate_shape=False)
                 embedded_characters = tf.nn.embedding_lookup(self.character_embedding_weights,
                                                              self.input_token_character_indices,
                                                              name='embedded_characters')
@@ -358,23 +362,23 @@ class EntityLSTM(object):
         if pretraining_dataset.index_to_token == dataset.index_to_token and pretraining_dataset.index_to_character == dataset.index_to_character:
 
             # Restore the pretrained model
-            self.saver.restore(sess,
-                               pretrained_model_checkpoint_filepath)  # Works only when the dimensions of tensor variables are matched.
+            # Works only when the dimensions of tensor variables are matched.
+            self.saver.restore(sess, pretrained_model_checkpoint_filepath)
 
         # If the token and character mappings are different between the pretrained model and the current model
         else:
 
             # Resize the token and character embedding weights to match them with the pretrained model (required in order to restore the pretrained model)
-            utils_tf.resize_tensor_variable(sess, self.character_embedding_weights, [pretraining_dataset.alphabet_size,
-                                                                                     parameters[
-                                                                                         'character_embedding_dimension']])
-            utils_tf.resize_tensor_variable(sess, self.token_embedding_weights, [pretraining_dataset.vocabulary_size,
-                                                                                 parameters[
-                                                                                     'token_embedding_dimension']])
+            utils_tf.resize_tensor_variable(sess, self.character_embedding_weights,
+                                            [pretraining_dataset.alphabet_size,
+                                             parameters['character_embedding_dimension']])
+            utils_tf.resize_tensor_variable(sess, self.token_embedding_weights,
+                                            [pretraining_dataset.vocabulary_size,
+                                             parameters['token_embedding_dimension']])
 
             # Restore the pretrained model
-            self.saver.restore(sess,
-                               pretrained_model_checkpoint_filepath)  # Works only when the dimensions of tensor variables are matched.
+            # Works only when the dimensions of tensor variables are matched.
+            self.saver.restore(sess, pretrained_model_checkpoint_filepath)
 
             # Get pretrained embeddings
             character_embedding_weights, token_embedding_weights = sess.run(

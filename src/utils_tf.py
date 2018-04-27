@@ -17,3 +17,4 @@ def variable_summaries(var):
     
 def resize_tensor_variable(sess, tensor_variable, shape):
     sess.run(tf.assign(tensor_variable, tf.zeros(shape), validate_shape=False))
+    # return tf.assign(tensor_variable, tf.zeros(shape), validate_shape=False)
