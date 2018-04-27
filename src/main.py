@@ -289,7 +289,7 @@ def main(argv=sys.argv):
 
 
 def predict(parameters_filepath):
-    ''' NeuroNER main method
+    ''' API
 
     Args:
         parameters_filepath the path to the parameters file
@@ -304,10 +304,19 @@ def predict(parameters_filepath):
     return prediction
 
 
+def testOnly():
+    arguments = parse_arguments(["--parameters_filepath",
+                                 "/Users/thieut/Workspace/FunctionalTerminology/data/models/lstm/parameters/parameters_wiki_doc_2.ini"])
+    nn = NeuroNER(**arguments)
+    nn.fit()
+    nn.close()
+
+
 def unit_test():
     predict("parameters.ini")
 
 
 if __name__ == "__main__":
     # main()
-    unit_test()
+    # unit_test()
+    testOnly()

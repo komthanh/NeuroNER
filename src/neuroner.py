@@ -124,25 +124,25 @@ class NeuroNER(object):
                        'check_for_lowercase', 'check_for_digits_replaced_with_zeros', 'freeze_token_embeddings',
                        'load_only_pretrained_token_embeddings', 'load_all_pretrained_token_embeddings']:
                 parameters[k] = distutils.util.strtobool(v)
-        # If loading pretrained model, set the model hyperparameters according to the pretraining parameters 
-        if parameters['use_pretrained_model']:
-            pretraining_parameters = self._load_parameters(
-                parameters_filepath=os.path.join(parameters['pretrained_model_folder'], 'parameters.ini'),
-                verbose=False)[0]
-            for name in ['use_character_lstm', 'character_embedding_dimension', 'character_lstm_hidden_state_dimension',
-                         'token_embedding_dimension', 'token_lstm_hidden_state_dimension', 'use_crf']:
-                if parameters[name] != pretraining_parameters[name]:
-                    print(
-                        'WARNING: parameter {0} was overwritten from {1} to {2} to be consistent with the pretrained model'.format(
-                            name, parameters[name], pretraining_parameters[name]))
-                    parameters[name] = pretraining_parameters[name]
+        # # If loading pretrained model, set the model hyperparameters according to the pretraining parameters
+        # if parameters['use_pretrained_model']:
+        #     pretraining_parameters = self._load_parameters(
+        #         parameters_filepath=os.path.join(parameters['pretrained_model_folder'], 'parameters.ini'),
+        #         verbose=False)[0]
+        #     for name in ['use_character_lstm', 'character_embedding_dimension', 'character_lstm_hidden_state_dimension',
+        #                  'token_embedding_dimension', 'token_lstm_hidden_state_dimension', 'use_crf']:
+        #         if parameters[name] != pretraining_parameters[name]:
+        #             print(
+        #                 'WARNING: parameter {0} was overwritten from {1} to {2} to be consistent with the pretrained model'.format(
+        #                     name, parameters[name], pretraining_parameters[name]))
+        #             parameters[name] = pretraining_parameters[name]
         if verbose: pprint(parameters)
-        # Update conf_parameters to reflect final parameter values
-        conf_parameters = configparser.ConfigParser()
-        conf_parameters.read(os.path.join('test', 'test-parameters-training.ini'))
-        parameter_to_section = utils.get_parameter_to_section_of_configparser(conf_parameters)
-        for k, v in parameters.items():
-            conf_parameters.set(parameter_to_section[k], k, str(v))
+        # # Update conf_parameters to reflect final parameter values
+        # conf_parameters = configparser.ConfigParser()
+        # conf_parameters.read(os.path.join('test', 'test-parameters-training.ini'))
+        # parameter_to_section = utils.get_parameter_to_section_of_configparser(conf_parameters)
+        # for k, v in parameters.items():
+        #     conf_parameters.set(parameter_to_section[k], k, str(v))
 
         return parameters, conf_parameters
 
@@ -533,6 +533,7 @@ class NeuroNER(object):
 
     def __del__(self):
         self.sess.close()
+        tf.reset_default_graph()
 
     def predictAPI(self, dataset_type):
         """
