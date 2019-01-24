@@ -10,6 +10,8 @@ import os
 import argparse
 from argparse import RawTextHelpFormatter
 import sys
+import tensorflow as tf
+
 from neuroner import NeuroNER
 from distutils import util
 
@@ -260,6 +262,8 @@ def parse_arguments(arguments=None):
     parser.add_argument('--use_crf', required=False, default=argument_default_value, help='')
     parser.add_argument('--use_pretrained_model', required=False, default=argument_default_value, help='')
     parser.add_argument('--verbose', required=False, default=argument_default_value, help='')
+    parser.add_argument('--dataset_name', required=False, default=argument_default_value,
+                        help='The real name of the dataset being processed')  # added by Thanh Thieu
 
     try:
         arguments = parser.parse_args(args=arguments)
@@ -288,35 +292,42 @@ def main(argv=sys.argv):
     nn.close()
 
 
-def predict(parameters_filepath):
-    ''' API
+def predict(crossvalid_type, parameters_filepath, dataset_name):
+    """
+    Author: Thanh Thieu
+    API to tag a particular set of cross validation.
 
-    Args:
-        parameters_filepath the path to the parameters file
-        output_folder the path to the output folder
-    '''
+    :param crossvalid_type: "train", "valid", "test"
+    :param parameters_filepath: The path to the parameters file
+    :param dataset_name: Real name of the dataset to substitute the "rundata" placeholder
+    :return:
+    """
     # Parse arguments
-    arguments = parse_arguments(["--parameters_filepath", parameters_filepath])
+    arguments = parse_arguments(["--parameters_filepath", parameters_filepath, "--dataset_name", dataset_name])
 
+    # Sequence tagging
     nn = NeuroNER(**arguments)
-    prediction = nn.predictAPI("test")
+    prediction = nn.predictAPI(crossvalid_type)
     nn.close()
     return prediction
 
 
 def testOnly():
     arguments = parse_arguments(["--parameters_filepath",
-                                 "/Users/thieut/Workspace/FunctionalTerminology/data/models/lstm/parameters/parameters_wiki_doc_2.ini"])
+                                 "/Users/thieut/Workspace/FunctionalTerminology/data/models/lstm/parameters/parameters_wiki_doc_3.ini"])
     nn = NeuroNER(**arguments)
     nn.fit()
     nn.close()
 
 
 def unit_test():
-    predict("parameters.ini")
+    results = predict("test",
+                      "/Users/thieut/Workspace/FunctionalTerminology/libs/neuroner_test_params/parameters_pubmed_sent_5.ini",
+                      "gsc_act_asst_quant")
+    print(results)
 
 
 if __name__ == "__main__":
     # main()
-    # unit_test()
-    testOnly()
+    unit_test()
+    # testOnly()

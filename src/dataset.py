@@ -168,8 +168,8 @@ class Dataset(object):
         all_tokens_in_pretraining_dataset = []
         all_characters_in_pretraining_dataset = []
         if parameters['use_pretrained_model']:
-            pretraining_dataset = pickle.load(
-                open(os.path.join(parameters['pretrained_model_folder'], 'dataset.pickle'), 'rb'))
+            with open(os.path.join(parameters['pretrained_model_folder'], 'dataset.pickle'), 'rb') as f:
+                pretraining_dataset = pickle.load(f)
             all_tokens_in_pretraining_dataset = pretraining_dataset.index_to_token.values()
             all_characters_in_pretraining_dataset = pretraining_dataset.index_to_character.values()
 

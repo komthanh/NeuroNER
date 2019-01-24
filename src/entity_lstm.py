@@ -347,8 +347,8 @@ class EntityLSTM(object):
         sess.run(embedding_weights.assign(initial_weights))
 
     def restore_from_pretrained_model(self, parameters, dataset, sess, token_to_vector=None):
-        pretraining_dataset = pickle.load(
-            open(os.path.join(parameters['pretrained_model_folder'], 'dataset.pickle'), 'rb'))
+        with open(os.path.join(parameters['pretrained_model_folder'], 'dataset.pickle'), 'rb') as f:
+            pretraining_dataset = pickle.load(f)
         pretrained_model_checkpoint_filepath = os.path.join(parameters['pretrained_model_folder'], 'model.ckpt')
 
         # Assert that the label sets are the same

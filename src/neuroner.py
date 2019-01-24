@@ -96,6 +96,7 @@ class NeuroNER(object):
         if len(parameters_filepath) > 0:
             conf_parameters = configparser.ConfigParser()
             conf_parameters.read(parameters_filepath)
+            print("Module 'utils' loaded from: {}".format(utils.__file__))
             nested_parameters = utils.convert_configparser_to_dictionary(conf_parameters)
             for k, v in nested_parameters.items():
                 parameters.update(v)
@@ -239,6 +240,19 @@ class NeuroNER(object):
         if parameters['gradient_clipping_value'] < 0:
             parameters['gradient_clipping_value'] = abs(parameters['gradient_clipping_value'])
 
+    def _adjustDatasetNames(self, parameters):
+        """
+        Author: Thanh Thieu
+        Replace the placeholder "rundata" by the appropriate dataset name
+        :return:
+        """
+        if parameters["dataset_name"] != self.argument_default_value:
+            pseudo_dataset_name = "rundata"
+            parameters["pretrained_model_folder"] = parameters["pretrained_model_folder"].replace(pseudo_dataset_name,
+                                                                                                  parameters["dataset_name"])
+            parameters["dataset_text_folder"] = parameters["dataset_text_folder"].replace(pseudo_dataset_name, parameters["dataset_name"])
+            parameters["output_folder"] = parameters["output_folder"].replace(pseudo_dataset_name, parameters["dataset_name"])
+
     def __init__(self,
                  parameters_filepath=argument_default_value,
                  pretrained_model_folder=argument_default_value,
@@ -281,13 +295,15 @@ class NeuroNER(object):
                  use_crf=argument_default_value,
                  use_pretrained_model=argument_default_value,
                  verbose=argument_default_value,
-                 argument_default_value=argument_default_value):
+                 argument_default_value=argument_default_value,
+                 dataset_name=argument_default_value):
 
         # Parse arguments
         arguments = dict((k, str(v)) for k, v in locals().items() if k != 'self')
 
         # Initialize parameters
         parameters, conf_parameters = self._load_parameters(arguments['parameters_filepath'], arguments=arguments)
+        self._adjustDatasetNames(parameters)
         dataset_filepaths, dataset_brat_folders = self._get_valid_dataset_filepaths(parameters)
         self._check_parameter_compatiblity(parameters, dataset_filepaths)
 
